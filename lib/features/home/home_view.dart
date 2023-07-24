@@ -6,6 +6,7 @@ import '../../models/exam.dart';
 
 abstract class HomeViewModelProtocol with ChangeNotifier {
   bool get isExamsEmpty;
+  bool get isLoading;
   List<Exam> get exams;
 
   void didTapSeeExam(Exam exam);
@@ -36,15 +37,24 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: _bodyWidget,
+      body: AnimatedBuilder(
+        animation: viewModel,
+        builder: (_, __) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: _bodyWidget,
+          );
+        },
       ),
     );
   }
 
   List<Widget> get _bodyWidget {
+    if (viewModel.isLoading) {
+      return [const Center(child: CircularProgressIndicator())];
+    }
+
     if (viewModel.isExamsEmpty) {
       return [
         const Center(

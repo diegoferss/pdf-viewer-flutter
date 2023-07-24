@@ -1,9 +1,11 @@
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'dart:async';
+
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:visualize_pdf_image/features/home/pdf_viewer/pdf_viewer_view_controller.dart';
 
 class PdfViewerViewModel extends PdfViewerProtocol {
   final String pdfPathArguments;
-  final PdfViewerController _pdfViewController = PdfViewerController();
+  final _pdfViewController = Completer<PDFViewController>();
 
   PdfViewerViewModel({required this.pdfPathArguments});
 
@@ -11,5 +13,23 @@ class PdfViewerViewModel extends PdfViewerProtocol {
   String get pdfPath => pdfPathArguments;
 
   @override
-  PdfViewerController get pdfViewController => _pdfViewController;
+  void onViewCreatedPdf(PDFViewController controller) {
+    _pdfViewController.complete(controller);
+    notifyListeners();
+  }
+
+  @override
+  void onRenderPdf(int? pages) {
+    notifyListeners();
+  }
+
+  @override
+  void onErrorPdf(dynamic error) {
+    notifyListeners();
+  }
+
+  @override
+  void onPageErrorPdf(int? page, dynamic error) {
+    notifyListeners();
+  }
 }
