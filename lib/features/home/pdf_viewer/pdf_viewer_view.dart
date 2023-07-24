@@ -5,6 +5,7 @@ import '../../../support/styles/app_colors.dart';
 
 abstract class PdfViewerViewModelProtocol with ChangeNotifier {
   String get pdfPath;
+  PdfViewerController get pdfViewController;
 }
 
 class PdfViewerView extends StatelessWidget {
@@ -16,29 +17,18 @@ class PdfViewerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        centerTitle: true,
-        elevation: 0,
-        leading: const IconButton(
-          onPressed: null,
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: Colors.grey,
-          ),
-        ),
-      ),
       body: AnimatedBuilder(
         animation: viewModel,
-        builder: _bodyPdfViewerWidget,
+        builder: (_, __) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: SfPdfViewer.network(
+              viewModel.pdfPath,
+              controller: viewModel.pdfViewController,
+            ),
+          );
+        },
       ),
-    );
-  }
-
-  Widget _bodyPdfViewerWidget(BuildContext context, Widget? child) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: SfPdfViewer.network(viewModel.pdfPath),
     );
   }
 }
